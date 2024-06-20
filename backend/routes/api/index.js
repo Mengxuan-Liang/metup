@@ -8,21 +8,30 @@ If there is NO valid current user session, then req.user will be set to null.
 */
 
 const router = require("express").Router();
+const sessionRouter = require('./session.js');
+const usersRouter = require('./users.js');
 const { restoreUser } = require("../../utils/auth.js");
 
 // Connect restoreUser middleware to the API router
 // If current user session is valid, set req.user to the user in the database
 // If current user session is not valid, set req.user to null
 router.use(restoreUser);
+// connect router exported from session.js
+router.use('/session', sessionRouter);
+// connect router exported from users.js
+router.use('/users', usersRouter);
+
+router.post('/test', function (req, res) {
+    res.json({ requestBody: req.body });
+});
 
 module.exports = router;
 
+
+// TESTING routes
 // const router = require('express').Router();
 // const { restoreUser } = require('../../utils/auth.js');
 
-// // router.post('/test', function (req, res) {
-// //     res.json({ requestBody: req.body });
-// // });
 // router.use(restoreUser);
 
 // const { setTokenCookie } = require('../../utils/auth.js');
