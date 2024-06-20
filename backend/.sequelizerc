@@ -1,3 +1,5 @@
+// this file helps with files structure
+
 const path = require('path');
 
 module.exports = {
