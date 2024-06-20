@@ -41,6 +41,20 @@ router.post(
     }
 );
 
+// LOG OUT: The DELETE /api/session logout route will remove the token cookie from the response and return a JSON success message.
+router.delete(
+    '/',
+    (req,res)=> {
+        res.clearCookie('token');
+        return res.json({message: 'success'})
+    }
+);
+
+
+
+
+
+
 module.exports = router;
 
 
