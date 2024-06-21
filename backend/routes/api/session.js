@@ -7,9 +7,30 @@ const { setTokenCookie, restoreUser } = require('../../utils/auth');
 const { User } = require('../../db/models');
 const router = express.Router();
 
+// Validating login req.body
+const { check } = require('express-validator');
+const { handleValidationErrors } = require('../../utils/validation');
+/*
+The validateLogin middleware is composed of the check and handleValidationErrors middleware. 
+'check'mw checks to see whether or not req.body.credential and req.body.password are empty. 
+If one of them is empty, then an error will be returned as the response in 'handleValidationErrors' mw.
+*/
+const validateLogin = [
+    check('credential') // either username or email
+        .exists({checkFalsy: true})//This method checks if the credential field exists in the request. The option { checkFalsy: true } ensures that the field is not only present but also not falsy (i.e., it can't be false, null, 0, "", etc.).
+        .notEmpty()
+        .withMessage('Please provide a valid email or username.'),
+    check('password')
+        .exists({checkFalsy: true})
+        .withMessage('Please provide a password.'),
+    handleValidationErrors //handles any validation errors that occur, formatting and sending them back to the client if needed.
+];
+
+
 // LOG IN
 router.post(
     '/',
+    validateLogin, //connect the POST /api/session route to the validateLogin middleware
     async (req, res, next) => {
         const {credential, password} = req.body;
 
@@ -77,7 +98,7 @@ router.get(
 
 
 
-module.exports = router;
+
 
 
 
