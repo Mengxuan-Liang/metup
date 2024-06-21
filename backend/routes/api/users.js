@@ -34,14 +34,16 @@ router.post(
     '/',
     validateSignup,
     async (req, res) => {
-        const {email, password, username} = req.body; //In the route handler, deconstruct the request body
+        const {email, password, username, firstName, lastName} = req.body; //In the route handler, deconstruct the request body
         const hashedPassword = bcrypt.hashSync(password);//use bcrypt's hashSync function to hash the user's provided password to be saved as the user's hashedPassword in the database.
-        const user = await User.create({email, username, hashedPassword});//Create a new User in the database with the username and email from the request body and the hashedPassword generated from bcryptjs.
+        const user = await User.create({email, username, hashedPassword, firstName, lastName});//Create a new User in the database with the username and email from the request body and the hashedPassword generated from bcryptjs.
 //use setTokenCookie to log in the user by creating a JWT cookie with the user's non-sensitive information as its payload.
         const safeUser = {
             id: user.id,
             email: user.email,
             username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName
         };
         await setTokenCookie(res, safeUser);
 //send a JSON response containing the user's non-sensitive information.
