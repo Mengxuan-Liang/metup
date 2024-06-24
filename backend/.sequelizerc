@@ -1,10 +1,14 @@
 // this file helps with files structure
 
-const path = require('path');
+const path = require('path'); //importing the path module from Node.js so that its functions can be used to resolve and manipulate file paths.
+/*
+The path.resolve function resolves a sequence of paths or path segments into an absolute path. 
+Here, it's used to create absolute paths for the configuration file, models, seeders, and migrations directories.
+*/
 
 module.exports = {
-  config: path.resolve('config', 'database.js'),
-  'models-path': path.resolve('db', 'models'),
+  config: path.resolve('config', 'database.js'),// This resolves to the absolute path of database.js inside the config directory.
+  'models-path': path.resolve('db', 'models'),//This resolves to the absolute path of the models directory inside the db directory.
   'seeders-path': path.resolve('db', 'seeders'),
   'migrations-path': path.resolve('db', 'migrations')
 };

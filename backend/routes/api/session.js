@@ -17,24 +17,31 @@ If one of them is empty, then an error will be returned as the response in 'hand
 */
 const validateLogin = [
     check('credential') // either username or email
-        .exists({checkFalsy: true})//This method checks if the credential field exists in the request. The option { checkFalsy: true } ensures that the field is not only present but also not falsy (i.e., it can't be false, null, 0, "", etc.).
+        .exists({ checkFalsy: true })//This method checks if the credential field exists in the request. The option { checkFalsy: true } ensures that the field is not only present but also not falsy (i.e., it can't be false, null, 0, "", etc.).
         .notEmpty()
         .withMessage('Please provide a valid email or username.'),
     check('password')
-        .exists({checkFalsy: true})
+        .exists({ checkFalsy: true })
         .withMessage('Please provide a password.'),
     handleValidationErrors //handles any validation errors that occur, formatting and sending them back to the client if needed.
 ];
 
-
+/*
+BACKEND LOGIN authentication flow:
+1.The API login route will be hit with a request body holding a valid credential (either username or email) and password combination.
+2.The API login handler will look for a User with the input credential in either the username or email columns.
+3.Then the hashedPassword for that found User will be compared with the input password for a match.
+4.If there is a match, the API login route should send back a JWT(JWT stands for JSON Web Token. 
+It is an open standard (RFC 7519) used for securely transmitting information between parties as a JSON object.) in an HTTP-only cookie and a response body. The JWT and the body will hold the user's id, username, and email.
+ */
 // LOG IN
 router.post(
     '/',
     validateLogin, //connect the POST /api/session route to the validateLogin middleware
     async (req, res, next) => {
-        const {credential, password} = req.body;
+        const { credential, password } = req.body;
 
-        const user = await User.unscoped().findOne({
+        const user = await User.unscoped().findOne({//turn off the default scope so that you can read all the attributes of the user including hashedPassword.
             where: {
                 [Op.or]: {
                     username: credential,
@@ -42,16 +49,16 @@ router.post(
                 }
             }
         });
-        if(!user || !bcrypt.compareSync(password, user.hashedPassword.toString())){
+        if (!user || !bcrypt.compareSync(password, user.hashedPassword.toString())) {
             const err = new Error('Login failed');
             err.status = 401;
             err.title = 'Login failed';
-            err.errors = {credential: 'The provided credentials were invalid.'};
+            err.errors = { credential: 'The provided credentials were invalid.' };
             return next(err);
         }
 
         const safeUser = {
-            id:user.id,
+            id: user.id,
             email: user.email,
             username: user.username,
             firstName: user.firstName,
@@ -65,11 +72,16 @@ router.post(
 );
 
 // LOG OUT: The DELETE /api/session logout route will remove the token cookie from the response and return a JSON success message.
+/*
+ backend logout flow: 
+ 1.The API logout route will be hit with a request.
+ 2.The API logout handler will remove the JWT cookie set by the login or signup API routes and return a JSON success message.
+ */
 router.delete(
     '/',
-    (req,res)=> {
+    (req, res) => {
         res.clearCookie('token');
-        return res.json({message: 'success'})
+        return res.json({ message: 'success' })
     }
 );
 
@@ -82,9 +94,9 @@ the routes/api/index.js file before the routes/api/session.js was connected to t
 */
 router.get(
     '/',
-    (req,res)=> {
-        const {user} = req;
-        if(user){
+    (req, res) => {
+        const { user } = req;
+        if (user) {
             const safeUser = {
                 id: user.id,
                 email: user.email,
@@ -93,7 +105,7 @@ router.get(
             return res.json({
                 user: safeUser
             });
-        }else return res.json({user: null})
+        } else return res.json({ user: null })
     }
 );
 

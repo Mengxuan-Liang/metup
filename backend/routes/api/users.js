@@ -30,6 +30,12 @@ const validateSignup = [
 ];
 
 // SIGNUP
+/*
+FLOW: 
+1.The API signup route will be hit with a request body holding a username, email, and password.
+2.The API signup handler will create a User with the username, an email, and a hashedPassword created from the input password.
+3.If the creation is successful, the API signup route should send back a JWT in an HTTP-only cookie and a response body. The JWT and the body will hold the user's id, username, and email.
+*/
 router.post(
     '/',
     validateSignup,

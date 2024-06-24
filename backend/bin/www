@@ -20,3 +20,9 @@ db.sequelize
     console.log('Database connection failure.');
     console.error(err);
   });
+
+/*
+Conventionally, the bin/www file in an Express server is the entry file or the starting point to start the Express server.
+The intention of the ./bin/www file is for it to be an executable script, meaning that you could start the application by simply entering the file name in the terminal as a command:bin/www
+Here, you will be starting your Express application to listen for server requests only after authenticating your database connection.
+*/

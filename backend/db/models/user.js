@@ -47,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'User',
-    defaultScope: {
+    defaultScope: { //To ensure that a user's information like their hashedPassword doesn't get sent to the frontend, you should define User model scopes.
       attributes: {
         exclude:['hashedPassword','email','createdAt','updatedAt']
       }
