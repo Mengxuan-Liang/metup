@@ -5,7 +5,15 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
-      // define association here
+      User.hasMany(models.Group, {
+        foreignKey:'organizerId'
+      });
+      User.hasMany(models.Membership, {
+        foreignKey: 'userId'
+      });
+      User.hasMany(models.Attendance, {
+        foreignKey:'userId'
+      })
     }
   }
   User.init({
@@ -24,9 +32,11 @@ module.exports = (sequelize, DataTypes) => {
     },
     firstName: {
       type: DataTypes.STRING,
+      allowNull: false
     },
     lastName: {
       type: DataTypes.STRING,
+      allowNull: false
     },
     email: {
       type: DataTypes.STRING,

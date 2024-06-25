@@ -10,6 +10,7 @@ If there is NO valid current user session, then req.user will be set to null.
 const router = require("express").Router();
 const sessionRouter = require('./session.js');
 const usersRouter = require('./users.js');
+const groupsRouter = require('./groups.js')
 const { restoreUser } = require("../../utils/auth.js");
 
 // Connect restoreUser middleware to the API router
@@ -20,6 +21,7 @@ router.use(restoreUser);
 router.use('/session', sessionRouter);
 // connect router exported from users.js
 router.use('/users', usersRouter);
+router.use('/groups', groupsRouter)
 
 router.post('/test', function (req, res) {
     res.json({ requestBody: req.body });
