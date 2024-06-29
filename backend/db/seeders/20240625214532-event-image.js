@@ -20,7 +20,7 @@ module.exports = {
         url: 'www.img2.com',
         preview: true
       },
-    ])
+    ],{validate: true})
   },
 
   async down (queryInterface, Sequelize) {

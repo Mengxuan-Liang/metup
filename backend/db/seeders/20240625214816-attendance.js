@@ -40,7 +40,7 @@ module.exports = {
         userId: 2,
         status: 'pending'
       },
-    ])
+    ],{validate: true})
   },
 
   async down (queryInterface, Sequelize) {

@@ -21,7 +21,7 @@ module.exports = {
       preview: true
     },
    
-   ])
+   ],{validate: true})
   },
 
   async down (queryInterface, Sequelize) {
