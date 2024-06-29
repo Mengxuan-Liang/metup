@@ -11,10 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
      Group.belongsTo(models.User, {
-      foreignKey:'organizerId'
+      foreignKey:'organizerId',
+      as: 'Organizer'
      });
      Group.hasMany(models.Membership, {
       foreignKey: 'groupId'
+     });
+     Group.hasMany(models.GroupImage, {
+      foreignKey:'groupId',as:'previewImage'
      });
      Group.hasMany(models.GroupImage, {
       foreignKey:'groupId'
@@ -34,7 +38,13 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Users'
       }
     },
-    name: DataTypes.STRING,
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len:[0,60]
+      }
+    },
     about: DataTypes.TEXT,
     type: {
       type: DataTypes.ENUM,

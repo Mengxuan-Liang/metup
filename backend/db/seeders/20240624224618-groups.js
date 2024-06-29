@@ -29,6 +29,15 @@ module.exports = {
         city:'Boston',
         state: 'MA'
       },
+      {
+        organizerId: 2,
+        name:'Swimming',
+        about: "Enjoying",
+        type: 'In person',
+        private: false,
+        city:'Boston',
+        state: 'MA'
+      },
     ], {validate: true})
   },
 

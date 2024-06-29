@@ -32,6 +32,17 @@ module.exports = {
       startDate: '2024-08-01',
       endDate: '2024-08-05'
     },
+    {
+      venueId: 2,
+      groupId: 1,
+      name:'Tech Meeting',
+      descirption: "A meetup for tech enthusiasts.",
+      type:'Online',
+      capacity:20,
+      price: 5,
+      startDate: '2024-08-01',
+      endDate: '2024-08-05'
+    },
    ],{validate: true})
   },
 

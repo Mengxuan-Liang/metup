@@ -13,12 +13,32 @@ module.exports = {
       {
         eventId: 1,
         userId: 1,
-        status: 'In person'
+        status: 'waitlist'
+      },
+      {
+        eventId: 1,
+        userId: 2,
+        status: 'pending'
       },
       {
         eventId: 2,
         userId: 2,
-        status: 'Online'
+        status: 'pending'
+      },
+      {
+        eventId: 2,
+        userId: 1,
+        status: 'attending'
+      },
+      {
+        eventId: 3,
+        userId: 2,
+        status: 'attending'
+      },
+      {
+        eventId: 3,
+        userId: 2,
+        status: 'pending'
       },
     ])
   },

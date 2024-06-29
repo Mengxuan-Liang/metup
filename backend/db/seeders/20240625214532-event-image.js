@@ -12,13 +12,13 @@ module.exports = {
     await EventImage.bulkCreate([
       {
         eventId: 1,
-        url: 'www.img.com',
+        url: 'www.img1.com',
         preview: true
       },
       {
         eventId: 2,
-        url: 'www.img.com',
-        preview: false
+        url: 'www.img2.com',
+        preview: true
       },
     ])
   },

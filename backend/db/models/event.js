@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       Event.hasMany(models.EventImage, {
         foreignKey:'eventId'
       });
+      Event.hasMany(models.EventImage, {
+        foreignKey:'eventId', as: 'previewImage'
+      });
       Event.belongsTo(models.Group, {
         foreignKey:'groupId'
       });
@@ -44,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
       values:['Online','In person']
     },
     capacity: DataTypes.INTEGER,
-    price: DataTypes.INTEGER,
+    price: DataTypes.FLOAT,
     startDate: DataTypes.DATE,
     endDate: DataTypes.DATE
   }, {

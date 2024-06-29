@@ -29,7 +29,7 @@ module.exports = {
       },
       status: {
         type: Sequelize.ENUM,
-        values:['co-host']
+        values:['co-host', 'member','pending']
       },
       createdAt: {
         allowNull: false,
