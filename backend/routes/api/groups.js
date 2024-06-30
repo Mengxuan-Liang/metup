@@ -535,7 +535,7 @@ router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => 
                     venueId,
                     name,
                     type,
-                    capacity,
+                    capacity: parseInt(capacity,10),
                     price: parseFloat(price),
                     description,
                     startDate,

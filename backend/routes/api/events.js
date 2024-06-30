@@ -225,7 +225,16 @@ router.get('/:eventId', async (req, res) => {
 });
 
 // Add an Image to an Event based on the Event's id
-router.post('/:eventId/images', requireAuth, async (req, res) => {
+// Middleware to validate image inputs
+const validateImage = [
+    check('url')
+        .isURL()
+        .withMessage('URL must be a valid URL'),
+    check('preview')
+        .isBoolean()
+        .withMessage('Preview must be a boolean'),
+];
+router.post('/:eventId/images', requireAuth, validateImage, async (req, res) => {
     //Require proper authorization: Current User must be an attendee, host, or co-host of the event
     const currentUser = req.user.id;
     const attendance = await Attendance.findAll({
