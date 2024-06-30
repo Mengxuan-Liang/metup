@@ -531,8 +531,8 @@ router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => 
             const venue = await Venue.findByPk(venueId);
             if (venue) {
                 const newEvent = await Event.create({
-                    groupId: groupId,
-                    venueId,
+                    groupId: parseInt(groupId),
+                    venueId: parseInt(venueId),
                     name,
                     type,
                     capacity: parseInt(capacity,10),
