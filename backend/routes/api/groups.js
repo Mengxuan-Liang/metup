@@ -106,7 +106,7 @@ router.get(
             {
                 model: GroupImage,
                 as: 'previewImage',
-                attributes: ['url','groupId'],
+                attributes: ['url','groupId','id'],
                 where: {
                     preview: true,
                 },
@@ -118,7 +118,7 @@ router.get(
                     [sequelize.fn('COUNT', sequelize.col('Memberships.groupId')), 'numMembers']
                 ]
             },
-            group: ['Group.id', 'previewImage.groupId']
+            group: ['Group.id', 'previewImage.groupId','previewImage.id']
         });
 
         const jsonGroup = groups.map(group => {
