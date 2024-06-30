@@ -106,7 +106,7 @@ router.get(
             {
                 model: GroupImage,
                 as: 'previewImage',
-                attributes: ['url'],
+                attributes: ['url','groupId'],
                 where: {
                     preview: true,
                 },
