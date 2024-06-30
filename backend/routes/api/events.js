@@ -249,7 +249,7 @@ router.post('/:eventId/images', requireAuth, validateImage, async (req, res) => 
         if (event) {
             const { url, preview } = req.body;
             const newEventImg = await EventImage.create({
-                eventId: req.params.eventId,
+                eventId: parseInt(req.params.eventId),
                 url,
                 preview
             });
