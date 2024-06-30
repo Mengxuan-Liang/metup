@@ -159,7 +159,7 @@ router.get('/', async (req, res) => {
         {
             model: EventImage,
             as: 'previewImage',
-            attributes: ['url'],
+            attributes: ['url','id','eventId'],
             where: {
                 preview: true
             },
@@ -171,7 +171,7 @@ router.get('/', async (req, res) => {
                 [sequelize.fn('COUNT', sequelize.col('Attendances.eventId')), 'numAttending']
             ]
         },
-        group: ['Event.id', 'previewImage.eventId'],
+        group: ['Event.id', 'previewImage.eventId','previewImage.id','Group.id','Venue.id'],
     });
     const formattedEvents = events.map(event => {
         const eventData = event.toJSON();

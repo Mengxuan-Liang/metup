@@ -52,7 +52,7 @@ router.get(
             {
                 model: GroupImage,
                 as: 'previewImage',
-                attributes: ['url'],
+                attributes: ['url','groupId','id'],
                 where: {
                     preview: true,
                 },
@@ -64,7 +64,7 @@ router.get(
                     [sequelize.fn('COUNT', sequelize.col('Memberships.groupId')), 'numMembers']
                 ]
             },
-            group: ['Group.id', 'previewImage.groupId']//When include an associated model (like Membership) and perform an aggregate operation (like COUNT), Sequelize needs to know how to group the results. By grouping the results by the Group.id, you ensure that each group's results are distinct and the count is accurate for each group.
+            group: ['Group.id', 'previewImage.groupId','previewImage.id']//When include an associated model (like Membership) and perform an aggregate operation (like COUNT), Sequelize needs to know how to group the results. By grouping the results by the Group.id, you ensure that each group's results are distinct and the count is accurate for each group.when you use GROUP BY, all selected columns that are not aggregated must be included in the GROUP BY clause to ensure correct grouping.
         });
 
         const jsonGroup = groups.map(group => {
@@ -337,7 +337,7 @@ router.get('/:groupId/venues', requireAuth, async (req, res) => {
             });
             res.json(venue)
         } else {
-            res.json({ message: 'You can not access to this infomation' })
+            res.status(403).json({ message: 'You can not access to this infomation' })
         }
     } else {
         res.status(404).json({
@@ -387,7 +387,7 @@ router.post('/:groupId/venues', requireAuth, validateVenue, async (req, res) => 
             });
             res.json(newVenue)
         } else {
-            res.json({ message: 'Not allowed' })
+            res.status(403).json({ message: 'Not allowed' })
         }
     } else {
         res.status(404).json({
@@ -417,7 +417,7 @@ router.get('/:groupId/events', async (req, res) => {
             {
                 model: EventImage,
                 as: 'previewImage',
-                attributes: ['url'],
+                attributes: ['url','id','eventId'],
                 where: {
                     preview: true
                 },
@@ -429,7 +429,7 @@ router.get('/:groupId/events', async (req, res) => {
                     [sequelize.fn('COUNT', sequelize.col('Attendances.eventId')), 'numAttending']
                 ]
             },
-            group: ['Event.id', 'previewImage.eventId']
+            group: ['Event.id', 'previewImage.eventId', 'Group.id','Venue.id','previewImage.id']
         });
         const formattedEvents = events.map(event => {
             const eventData = event.toJSON();
@@ -536,7 +536,7 @@ router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => 
                     name,
                     type,
                     capacity,
-                    price,
+                    price: parseFloat(price),
                     description,
                     startDate,
                     endDate
@@ -546,7 +546,7 @@ router.post('/:groupId/events', requireAuth, validateEvent, async (req, res) => 
                 res.status(404).json({ message: 'Venue could not be found' })
             }
         } else {
-            res.json({ message: 'Not allowed' })
+            res.status(403).json({ message: 'Not allowed' })
         }
     } else {
         res.status(404).json({
