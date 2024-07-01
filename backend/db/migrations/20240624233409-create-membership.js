@@ -28,8 +28,8 @@ module.exports = {
         onDelete:'CASCADE'
       },
       status: {
-        type: Sequelize.ENUM,
-        values:['co-host', 'member','pending']
+        type: Sequelize.ENUM('co-host', 'member','pending'),
+        // values:['co-host', 'member','pending']
       },
       createdAt: {
         allowNull: false,
@@ -45,6 +45,8 @@ module.exports = {
   },
   async down(queryInterface, Sequelize) {
     options.tableName = 'Memberships';
-    return queryInterface.dropTable(options);
+    await queryInterface.dropTable(options);
+    // This is needed to drop the ENUM type in PostgreSQL
+    await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_Memberships_status";');
   }
 };

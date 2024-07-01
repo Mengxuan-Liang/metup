@@ -366,8 +366,8 @@ router.put('/:eventId', requireAuth, validateUpdateEvent, async (req, res) => {
                 event.venueId = venueId;
                 if (name !== undefined) event.name = name;
                 if (type !== undefined) event.type = type;
-                if (capacity !== undefined) event.capacity = capacity;
-                if (price !== undefined) event.price = price;
+                if (capacity !== undefined) event.capacity = parseInt(capacity);
+                if (price !== undefined) event.price = parseFloat(price);
                 if (description !== undefined) event.description = description;
                 if (startDate !== undefined) event.startDate = startDate;
                 if (endDate !== undefined) event.endDate = endDate;
@@ -431,6 +431,9 @@ router.get('/:eventId/attendees', async (req, res) => {
         //If you ARE the organizer of the group or a member of the group with a status of "co-host". 
         //Shows all attendees including those with a status of "pending".
         const group = await Group.findByPk(event.groupId);
+        if(!group){
+            return res.status(404).json({message: 'Group can not found'})
+        }
         const organizerId = group.organizerId;
 
         const membership = await Membership.findOne({
@@ -439,6 +442,9 @@ router.get('/:eventId/attendees', async (req, res) => {
                 groupId: group.id
             }
         });
+        if(!membership){
+            return res.status(404).json({message: 'No membership between the user and group'})
+        }
         const status = membership.status;
         let attendees;
         if (currentUserId === organizerId || status === 'co-host') {

@@ -34,8 +34,11 @@ const validateVenue = [
     handleValidationErrors
 ]
 router.put('/:venueId', requireAuth, validateVenue, async (req, res) => {
+    const venueId = parseInt(req.params.venueId);
+    if(!venueId){
+        return res.status(400).json({ message: "Invalid venue id" })
+    }
     const currentUser = req.user.id;
-    const venueId = req.params.venueId;
     const venue = await Venue.findByPk(venueId);
     if (venue) {
         const groupId = venue.groupId
@@ -54,7 +57,7 @@ router.put('/:venueId', requireAuth, validateVenue, async (req, res) => {
             await venue.save();
             res.status(200).json(venue)
         } else {
-            res.json({ message: 'Not allowed' })
+            res.status(403).json({ message: 'Not allowed' })
         }
     } else {
         res.status(404).json({

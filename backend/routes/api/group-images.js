@@ -7,8 +7,12 @@ const { requireAuth } = require('../../utils/auth');
 // Delete an Image for a Group
 router.delete('/:imageId', requireAuth, async(req,res)=> {
     //Require proper authorization: Current user must be the organizer or "co-host" of the Group
+    const imageId = parseInt(req.params.imageId);
+    if(!imageId){
+        return res.status(400).json({ message: "Invalid image id" })
+    }
+    const groupImg = await GroupImage.findByPk(imageId);
     const currentUser = req.user.id;
-    const groupImg = await GroupImage.findByPk(req.params.imageId);
     if(groupImg){
         const group = await Group.findByPk(groupImg.groupId);
         const organizer = group.organizerId;

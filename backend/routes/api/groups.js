@@ -345,8 +345,10 @@ router.get('/:groupId/venues', requireAuth, async (req, res) => {
         const group = await Group.findByPk(groupId);
         const membership = await Membership.findAll({
             where: { userId: currentUser }
-        })
-
+        });
+        if(!membership){
+            return res.status(404).json({message: 'No membership between the user and group'})
+        }
         if (group) {
             if (currentUser === group.organizerId || membership.status === 'co-host') {
                 const venue = await Venue.findAll({
@@ -598,7 +600,10 @@ router.get('/:groupId/members', async (req, res) => {
     const group = await Group.findByPk(groupId);
     const membership = await Membership.findOne({
         where: { userId: currentUser }
-    })
+    });
+    if(!membership){
+        return res.status(404).json({message: 'No membership between the user and group'})
+    }
     if (group) {
         let members;
         if (currentUser === group.organizerId || membership.status === 'co-host') {
@@ -650,7 +655,7 @@ router.post('/:groupId/membership', requireAuth, handleValidationErrors, async (
     const groupId = parseInt(req.params.groupId);
     if (groupId) {
         const group = await Group.findByPk(req.params.groupId);
-        if (group && (group.id !== null || group.id !== undefined)) {
+        if (group) {
             const currentUser = req.user.id;
             const membership = await Membership.findOne({
                 where: { userId: currentUser },
