@@ -41,7 +41,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       price: {
-        type: Sequelize.FLOAT
+        type: Sequelize.DECIMAL(6,2)
       },
       startDate: {
         type: Sequelize.DATE

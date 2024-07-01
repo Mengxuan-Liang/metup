@@ -41,11 +41,20 @@ router.put('/:venueId', requireAuth, validateVenue, async (req, res) => {
     const currentUser = req.user.id;
     const venue = await Venue.findByPk(venueId);
     if (venue) {
-        const groupId = venue.groupId
+        const groupId = venue.groupId;
+        if(!groupId){
+            return res.status(400).json({message:'No group id'})
+        }
         const group = await Group.findByPk(groupId);
+        if(!group){
+            return res.status(400).json({message:'No group'})
+        }
         const membership = await Membership.findAll({
             where: { userId: currentUser }
         });
+        if(!membership){
+            return res.status(400).json({message:'No membership'})
+        }
         if (currentUser === group.organizerId || membership.status === 'co-host') {
             const { address, city, state, lat, lng } = req.body;
             if(address) venue.address = address;

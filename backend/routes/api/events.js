@@ -292,7 +292,7 @@ const validateUpdateEvent = [
             }
             return true;
         })
-        .toFloat()
+        .toFloat({min:0})
         .withMessage("Price is invalid"),
     check('description')
         .optional()

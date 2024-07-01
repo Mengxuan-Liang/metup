@@ -659,17 +659,19 @@ router.post('/:groupId/membership', requireAuth, handleValidationErrors, async (
             const currentUser = req.user.id;
             const membership = await Membership.findOne({
                 where: { userId: currentUser },
-                where: { groupId: req.params.groupId }
+                where: { groupId: groupId }
             });
             // console.log(membership)
             if (membership && membership.status === 'pending') {
                 res.status(400).json({ "message": "Membership has already been requested" })
-            } else if (membership && membership.status !== 'pending') {
+            } else if (membership && membership.status === 'member') {
                 res.status(400).json({ "message": "User is already a member of the group" })
+            } else if (membership && membership.status === 'co-host') {
+                res.status(400).json({ "message": "User is already a co-host of the group" })
             } else {
                 const newMember = await Membership.create({
                     userId: currentUser,
-                    groupId: parseInt(req.params.groupId),
+                    groupId: groupId,
                     status: 'pending'
                 })
                 res.status(200).json(newMember)
