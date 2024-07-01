@@ -199,7 +199,10 @@ router.get('/', async (req, res) => {
 
 // Get details of an Event specified by its id
 router.get('/:eventId', async (req, res) => {
-    const eventId = req.params.eventId;
+    const eventId = parseInt(req.params.eventId);
+    if(!eventId){
+        return res.status(400).json({ message: "Invalid event id" })
+    }
     const event = await Event.findAll({
         where: { id: eventId },
         include: [
@@ -217,7 +220,7 @@ router.get('/:eventId', async (req, res) => {
             }
         ]
     });
-    if (event.length > 0) {
+    if (event.length > 0 && eventId !== null) {
         res.json(event)
     } else {
         res.status(404).json({ message: 'Event could not be found' })
@@ -236,20 +239,24 @@ const validateImage = [
 ];
 router.post('/:eventId/images', requireAuth, validateImage, async (req, res) => {
     //Require proper authorization: Current User must be an attendee, host, or co-host of the event
+    const eventId = parseInt(req.params.eventId);
+    if(!eventId){
+        return res.status(400).json({ message: "Invalid event id" })
+    }
     const currentUser = req.user.id;
     const attendance = await Attendance.findAll({
-        where: { eventId: req.params.eventId }
+        where: { eventId: eventId }
     });
     const attendanceData = attendance.some(attend => {
         const attednData = attend.toJSON();
         return attednData.userId === currentUser
     })
     if (attendanceData) {
-        const event = await Event.findByPk(req.params.eventId);
-        if (event) {
+        const event = await Event.findByPk(eventId);
+        if (event.id !== null) {
             const { url, preview } = req.body;
             const newEventImg = await EventImage.create({
-                eventId: parseInt(req.params.eventId),
+                eventId: eventId,
                 url,
                 preview
             });
@@ -329,8 +336,12 @@ const validateUpdateEvent = [
 router.put('/:eventId', requireAuth, validateUpdateEvent, async (req, res) => {
     //Require Authorization: Current User must be the organizer of the group 
     //or a member of the group with a status of "co-host"
+    const eventId = parseInt(req.params.eventId);
+    if(!eventId){
+        return res.status(400).json({ message: "Invalid event id" })
+    }
     const currentUser = req.user.id;
-    const event = await Event.findByPk(req.params.eventId);
+    const event = await Event.findByPk(eventId);
     if (!event) {
         res.status(404).json({
             "message": "Event couldn't be found"
@@ -374,7 +385,11 @@ router.put('/:eventId', requireAuth, validateUpdateEvent, async (req, res) => {
 
 // Delete an Event specified by its id
 router.delete('/:eventId', requireAuth, async (req, res) => {
-    const event = await Event.findByPk(req.params.eventId);
+    const eventId = parseInt(req.params.eventId);
+    if(!eventId){
+        return res.status(400).json({ message: "Invalid event id" })
+    }
+    const event = await Event.findByPk(eventId);
     if (event) {
         const currentUser = req.user.id;
         const groupId = event.groupId;
@@ -406,7 +421,11 @@ router.delete('/:eventId', requireAuth, async (req, res) => {
 
 // Get all Attendees of an Event specified by its id
 router.get('/:eventId/attendees', async (req, res) => {
-    const event = await Event.findByPk(req.params.eventId);
+    const eventId = parseInt(req.params.eventId);
+    if(!eventId){
+        return res.status(400).json({ message: "Invalid event id" })
+    }
+    const event = await Event.findByPk(eventId);
     const currentUserId = req.user.id;
     if (event) {
         //If you ARE the organizer of the group or a member of the group with a status of "co-host". 
@@ -424,7 +443,7 @@ router.get('/:eventId/attendees', async (req, res) => {
         let attendees;
         if (currentUserId === organizerId || status === 'co-host') {
             attendees = await Attendance.findAll({
-                where: { eventId: req.params.eventId },
+                where: { eventId: eventId },
                 include: {
                     model: User,
                     attributes: ['id', 'firstName', 'lastName']
@@ -433,7 +452,7 @@ router.get('/:eventId/attendees', async (req, res) => {
         } else {//If you ARE NOT the organizer of the group or a member of the group with a status of "co-host". Shows all members that don't have a status of "pending".
             attendees = await Attendance.findAll({
                 where: {
-                    eventId: req.params.eventId,
+                    eventId: eventId,
                     status: {
                         [Op.ne]: 'pending'
                     }
@@ -466,7 +485,11 @@ router.get('/:eventId/attendees', async (req, res) => {
 // Request to Attend an Event based on the Event's id
 router.post('/:eventId/attendance', requireAuth, async (req, res) => {
     //Require Authorization: Current User must be a member of the group
-    const event = await Event.findByPk(req.params.eventId);
+    const eventId = parseInt(req.params.eventId);
+    if(!eventId){
+        return res.status(400).json({ message: "Invalid event id" })
+    }
+    const event = await Event.findByPk(eventId);
     const currentUserId = req.user.id;
     if (event) {
         const group = await Group.findByPk(event.groupId);
@@ -491,7 +514,7 @@ router.post('/:eventId/attendance', requireAuth, async (req, res) => {
                 res.status(400).json({ message: 'User is on the waitlist' })
             } else {
                 const newAttendance = await Attendance.create({
-                    eventId: event.id,
+                    eventId: eventId,
                     userId: currentUserId,
                     status: 'pending'
                 });
@@ -510,7 +533,11 @@ router.post('/:eventId/attendance', requireAuth, async (req, res) => {
 // Change the status of an attendance for an event specified by id
 router.put('/:eventId/attendance', requireAuth, async (req, res) => {
     //Require proper authorization: Current User must already be the organizer or have a membership to the group with the status of "co-host"
-    const event = await Event.findByPk(req.params.eventId);
+    const eventId = parseInt(req.params.eventId);
+    if(!eventId){
+        return res.status(400).json({ message: "Invalid event id" })
+    }
+    const event = await Event.findByPk(eventId);
     const currentUserId = req.user.id;
     if (event) {
         const group = await Group.findByPk(event.groupId);
@@ -569,12 +596,16 @@ router.put('/:eventId/attendance', requireAuth, async (req, res) => {
 // Delete attendance to an event specified by id
 router.delete('/:eventId/attendance/:userId', requireAuth, async (req, res) => {
     //Require proper authorization: Current User must be the host of the group, or the user whose attendance is being deleted
+    const eventId = parseInt(req.params.eventId);
+    if(!eventId){
+        return res.status(400).json({ message: "Invalid event id" })
+    }
     const currentUser = req.user.id;
-    const event = await Event.findByPk(req.params.eventId);
+    const event = await Event.findByPk(eventId);
     if (event) {
         const group = await Group.findByPk(event.groupId);
         const organizer = group.organizerId;
-        const deletedUser = req.params.userId;
+        const deletedUser = parseInt(req.params.userId);
         if (deletedUser) {
             if (currentUser === organizer || currentUser === deletedUser) {
                 const attend = await Attendance.findOne({
