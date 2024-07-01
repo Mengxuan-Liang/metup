@@ -358,9 +358,10 @@ router.put('/:eventId', requireAuth, validateUpdateEvent, async (req, res) => {
             const memberData = member.toJSON();
             return memberData.userId === currentUser && memberData.status === 'co-host'
         })
-        // console.log(membershipData)
+       
         if (currentUser === organizerId || membershipData) {
             const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
+            //  console.log(price, typeof(price))
             const venue = await Venue.findByPk(venueId);
             if (venue) {
                 event.venueId = venueId;
