@@ -48,18 +48,19 @@ router.post(
     validateSignup,
     async (req, res) => {
         const { email, password, username, firstName, lastName } = req.body; //In the route handler, deconstruct the request body
-        const emailExist = await User.findOne({ where: { email } });
+        const allUsers = await User.findAll();
+        const emailExist = allUsers.find(user => user.email === email)
         if (emailExist) {
-            res.status(500).json({
+            return res.status(500).json({
                 "message": "User already exists",
                 "errors": {
                     "email": "User with that email already exists"
                 }
             })
         }
-        const usernameExist = await User.findOne({ where: { username } });
+        const usernameExist = allUsers.find(user => user.username === username)
         if (usernameExist) {
-            res.status(500).json({
+            return res.status(500).json({
                 "message": "User already exists",
                 "errors": {
                     "username": "User with that username already exists"
