@@ -187,7 +187,8 @@ router.get('/', async (req, res) => {
             startDate: eventData.startDate,
             endDate: eventData.endDate,
             numAttending: eventData.numAttending,
-            previewImage: eventData.previewImage.length ? eventData.previewImage[0].url : null,
+            // previewImage: eventData.previewImage.length ? eventData.previewImage[0].url : null,
+            previewImage: eventData.previewImage.length ? eventData.previewImage.map(el => el.url) : null,
             Group: eventData.Group,
             Venue: eventData.Venue
         }
