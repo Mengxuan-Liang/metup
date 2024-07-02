@@ -53,9 +53,9 @@ router.get(
                 model: GroupImage,
                 as: 'previewImage',
                 attributes: ['url', 'groupId', 'id'],
-                where: {
-                    preview: true,
-                },
+                // where: {
+                //     preview: true,
+                // },
                 required: false
             }
             ],
@@ -81,7 +81,7 @@ router.get(
                 createdAt: jsonG.createdAt,
                 updatedAt: jsonG.updatedAt,
                 numMembers: jsonG.numMembers,
-                previewImage: jsonG.previewImage.length ? jsonG.previewImage[0].url : null
+                previewImage: jsonG.previewImage.length ? jsonG.previewImage.map(el => el.url): null
             }
 
         })
@@ -135,7 +135,8 @@ router.get(
                 createdAt: jsonG.createdAt,
                 updatedAt: jsonG.updatedAt,
                 numMembers: jsonG.numMembers,
-                previewImage: jsonG.previewImage.length ? jsonG.previewImage[0].url : null
+                // previewImage: jsonG.previewImage.length ? jsonG.previewImage[0].url : null
+                previewImage: jsonG.previewImage.length ? jsonG.previewImage.map(el => el.url): null
             }
 
         })
