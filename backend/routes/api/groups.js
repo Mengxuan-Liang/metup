@@ -733,10 +733,10 @@ router.put('/:groupId/membership', requireAuth, validateEditMembership, async (r
                         const currentUserMembership = await Membership.findOne({
                             where: { userId: currentUser }
                         });
-                        if(!currentUserMembership){
-                            return res.status(400).json({message: 'No membership'})
-                        }
-                        if (currentUser === group.organizerId || currentUserMembership.status === 'co-host') {
+                        // if(!currentUserMembership){
+                        //     return res.status(400).json({message: 'No membership'})
+                        // }
+                        if (currentUser === group.organizerId || (currentUserMembership&&currentUserMembership.status === 'co-host')) {
                             member.status = status;
                             await member.save();
                             res.status(200).json(member);
