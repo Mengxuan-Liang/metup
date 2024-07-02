@@ -244,29 +244,64 @@ router.post('/:eventId/images', requireAuth, validateImage, async (req, res) => 
         return res.status(400).json({ message: "Invalid event id" })
     }
     const currentUser = req.user.id;
-    const attendance = await Attendance.findAll({
-        where: { eventId: eventId }
+    const attendance = await Attendance.findOne({
+        where: { 
+            eventId: eventId,
+            userId: currentUser
+        }
     });
-    const attendanceData = attendance.some(attend => {
-        const attednData = attend.toJSON();
-        return attednData.userId === currentUser
-    })
-    if (attendanceData) {
-        const event = await Event.findByPk(eventId);
-        if (event.id !== null) {
-            const { url, preview } = req.body;
+    if(!attendance){
+        res.status(404).json({message: 'No attendance between the user and this event'})
+    };
+    const event = await Event.findByPk(eventId);
+    if(!event){
+        res.status(404).json({message: 'No event'})
+    };
+    const group = await Group.findByPk(event.groupId);
+    if(!group){
+        res.status(404).json({message: 'No group'})
+    };
+    const organizer = group.organizerId;
+    const membership = await Membership.findOne({
+        where: {
+            userId: currentUser,
+            groupId: group.id
+        }
+    });
+    if(!membership){
+        res.status(404).json({message: 'No membership'})
+    };
+    if(attendance.status === 'attending' || currentUser === organizer || membership.status === 'co-host'){
+        const { url, preview } = req.body;
             const newEventImg = await EventImage.create({
                 eventId: eventId,
                 url,
                 preview
             });
             res.json(newEventImg)
-        } else {
-            res.status(404).json({ message: 'Event could not be found' })
-        }
-    } else {
+    }else {
         res.status(403).json({ message: 'Not allowed' })
     }
+    // const attendanceData = attendance.some(attend => {
+    //     const attednData = attend.toJSON();
+    //     return attednData.userId === currentUser
+    // })
+    // if (attendanceData) {
+    //     const event = await Event.findByPk(eventId);
+    //     if (event.id !== null) {
+    //         const { url, preview } = req.body;
+    //         const newEventImg = await EventImage.create({
+    //             eventId: eventId,
+    //             url,
+    //             preview
+    //         });
+    //         res.json(newEventImg)
+    //     } else {
+    //         res.status(404).json({ message: 'Event could not be found' })
+    //     }
+    // } else {
+    //     res.status(403).json({ message: 'Not allowed' })
+    // }
 })
 
 // Edit an Event specified by its id
