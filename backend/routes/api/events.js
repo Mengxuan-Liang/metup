@@ -204,7 +204,7 @@ router.get('/:eventId', async (req, res) => {
     if(!eventId){
         return res.status(400).json({ message: "Invalid event id" })
     }
-    const event = await Event.findAll({
+    const event = await Event.findOne({
         where: { id: eventId },
         include: [
             {
@@ -283,26 +283,6 @@ router.post('/:eventId/images', requireAuth, validateImage, async (req, res) => 
     }else {
         res.status(403).json({ message: 'Not allowed' })
     }
-    // const attendanceData = attendance.some(attend => {
-    //     const attednData = attend.toJSON();
-    //     return attednData.userId === currentUser
-    // })
-    // if (attendanceData) {
-    //     const event = await Event.findByPk(eventId);
-    //     if (event.id !== null) {
-    //         const { url, preview } = req.body;
-    //         const newEventImg = await EventImage.create({
-    //             eventId: eventId,
-    //             url,
-    //             preview
-    //         });
-    //         res.json(newEventImg)
-    //     } else {
-    //         res.status(404).json({ message: 'Event could not be found' })
-    //     }
-    // } else {
-    //     res.status(403).json({ message: 'Not allowed' })
-    // }
 })
 
 // Edit an Event specified by its id

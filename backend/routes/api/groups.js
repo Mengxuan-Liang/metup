@@ -474,7 +474,8 @@ router.get('/:groupId/events', async (req, res) => {
                 startDate: eventData.startDate,
                 endDate: eventData.endDate,
                 numAttending: eventData.numAttending,
-                previewImage: eventData.previewImage.length ? eventData.previewImage[0].url : null,
+                // previewImage: eventData.previewImage.length ? eventData.previewImage[0].url : null,
+                previewImage: eventData.previewImage.length ? eventData.previewImage.map(el => el.url) : null,
                 Group: eventData.Group,
                 Venue: eventData.Venue
             }
@@ -655,14 +656,17 @@ router.get('/:groupId/members', async (req, res) => {
 router.post('/:groupId/membership', requireAuth, handleValidationErrors, async (req, res) => {
     const groupId = parseInt(req.params.groupId);
     if (groupId) {
-        const group = await Group.findByPk(req.params.groupId);
+        const group = await Group.findByPk(groupId);
         if (group) {
             const currentUser = req.user.id;
             const membership = await Membership.findOne({
-                where: { userId: currentUser },
-                where: { groupId: groupId }
+                // where: { userId: currentUser }, //The where clause is being overridden, so only the last condition is being considered.
+                // where: { groupId: groupId } // This means you are only checking for the groupId and not the userId.
+                where: {
+                    userId: currentUser,
+                    groupId: groupId
+                }
             });
-            // console.log(membership)
             if (membership && membership.status === 'pending') {
                 res.status(400).json({ "message": "Membership has already been requested" })
             } else if (membership && membership.status === 'member') {
