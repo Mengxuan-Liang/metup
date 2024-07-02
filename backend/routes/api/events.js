@@ -250,9 +250,9 @@ router.post('/:eventId/images', requireAuth, validateImage, async (req, res) => 
             userId: currentUser
         }
     });
-    if(!attendance){
-        res.status(404).json({message: 'No attendance between the user and this event'})
-    };
+    // if(!attendance){
+    //     res.status(404).json({message: 'No attendance between the user and this event'})
+    // };
     const event = await Event.findByPk(eventId);
     if(!event){
         res.status(404).json({message: 'No event'})
@@ -268,10 +268,10 @@ router.post('/:eventId/images', requireAuth, validateImage, async (req, res) => 
             groupId: group.id
         }
     });
-    if(!membership){
-        res.status(404).json({message: 'No membership'})
-    };
-    if(attendance.status === 'attending' || currentUser === organizer || membership.status === 'co-host'){
+    // if(!membership){
+    //     res.status(404).json({message: 'No membership'})
+    // };
+    if((attendance && attendance.status === 'attending') || currentUser === organizer || (membership&&membership.status === 'co-host')){
         const { url, preview } = req.body;
             const newEventImg = await EventImage.create({
                 eventId: eventId,
