@@ -221,8 +221,8 @@ router.get('/:eventId', async (req, res) => {
             }
         ]
     });
-    if (event.length > 0 && eventId !== null) {
-        res.json(event)
+    if (event) {
+        res.status(200).json(event)
     } else {
         res.status(404).json({ message: 'Event could not be found' })
     }
@@ -459,12 +459,12 @@ router.get('/:eventId/attendees', async (req, res) => {
                 groupId: group.id
             }
         });
-        if(!membership){
-            return res.status(404).json({message: 'No membership between the user and group'})
-        }
-        const status = membership.status;
+        // if(!membership){
+        //     return res.status(404).json({message: 'No membership between the user and group'})
+        // }
+        // const status = membership.status;
         let attendees;
-        if (currentUserId === organizerId || status === 'co-host') {
+        if (currentUserId === organizerId || (membership && membership.status === 'co-host') ){
             attendees = await Attendance.findAll({
                 where: { eventId: eventId },
                 include: {
@@ -522,7 +522,7 @@ router.post('/:eventId/attendance', requireAuth, async (req, res) => {
                 userId: currentUserId
             }
         });
-        if (membership && (membership.status === 'co-host' || membership.status === 'member')) {
+        if (membership) {
             const attend = await Attendance.findOne({
                 where: {
                     eventId: event.id,
