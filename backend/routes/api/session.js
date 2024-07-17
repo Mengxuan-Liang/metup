@@ -11,8 +11,8 @@ const router = express.Router();
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 /*
-The validateLogin middleware is composed of the check and handleValidationErrors middleware. 
-'check'mw checks to see whether or not req.body.credential and req.body.password are empty. 
+The validateLogin middleware is composed of the check and handleValidationErrors middleware.
+'check'mw checks to see whether or not req.body.credential and req.body.password are empty.
 If one of them is empty, then an error will be returned as the response in 'handleValidationErrors' mw.
 */
 const validateLogin = [
@@ -31,7 +31,7 @@ BACKEND LOGIN authentication flow:
 1.The API login route will be hit with a request body holding a valid credential (either username or email) and password combination.
 2.The API login handler will look for a User with the input credential in either the username or email columns.
 3.Then the hashedPassword for that found User will be compared with the input password for a match.
-4.If there is a match, the API login route should send back a JWT(JWT stands for JSON Web Token. 
+4.If there is a match, the API login route should send back a JWT(JWT stands for JSON Web Token.
 It is an open standard (RFC 7519) used for securely transmitting information between parties as a JSON object.) in an HTTP-only cookie and a response body. The JWT and the body will hold the user's id, username, and email.
  */
 // LOG IN
@@ -73,7 +73,7 @@ router.post(
 
 // LOG OUT: The DELETE /api/session logout route will remove the token cookie from the response and return a JSON success message.
 /*
- backend logout flow: 
+ backend logout flow:
  1.The API logout route will be hit with a request.
  2.The API logout handler will remove the JWT cookie set by the login or signup API routes and return a JSON success message.
  */
@@ -87,8 +87,8 @@ router.delete(
 
 // GET SESSION USER
 /*
-The GET /api/session get session user route will return the session user as JSON under the key of user . 
-If there is not a session, it will return a JSON with an empty object. 
+The GET /api/session get session user route will return the session user as JSON under the key of user .
+If there is not a session, it will return a JSON with an empty object.
 req.user should be assigned when the restoreUser middleware is called as it was connected to the router in
 the routes/api/index.js file before the routes/api/session.js was connected to the router (router.use(restoreUser)).
 */

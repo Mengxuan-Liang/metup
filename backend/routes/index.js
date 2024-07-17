@@ -9,8 +9,41 @@ router.use('/api', apiRouter);
 //   res.send('Hello World!');
 // });
 
-// Add a XSRF-TOKEN cookie; this endpoint is designed to provide a CSRF token to the client;the route sets a new XSRF-TOKEN cookie each time it's accessed, 
-//ensuring that a valid CSRF token is always available for use in subsequent requests. 
+// Static routes
+// Serve React build files in production
+if (process.env.NODE_ENV === 'production') {
+    const path = require('path');
+    // Serve the frontend's index.html file at the root route
+    router.get('/', (req, res) => {
+      res.cookie('XSRF-TOKEN', req.csrfToken());
+      return res.sendFile(
+        path.resolve(__dirname, '../../frontend', 'dist', 'index.html')
+      );
+    });
+
+    // Serve the static assets in the frontend's build folder
+    router.use(express.static(path.resolve("../frontend/build")));
+
+    // Serve the frontend's index.html file at all other routes NOT starting with /api
+    router.get(/^(?!\/?api).*/, (req, res) => {
+      res.cookie('XSRF-TOKEN', req.csrfToken());
+      return res.sendFile(
+        path.resolve(__dirname, '../../frontend', 'build', 'index.html')
+      );
+    });
+  }
+
+// Add a XSRF-TOKEN cookie in development
+if (process.env.NODE_ENV !== 'production') {
+    router.get('/api/csrf/restore', (req, res) => {
+      res.cookie('XSRF-TOKEN', req.csrfToken());
+      return res.json({});
+    });
+  }
+
+
+// Add a XSRF-TOKEN cookie; this endpoint is designed to provide a CSRF token to the client;the route sets a new XSRF-TOKEN cookie each time it's accessed,
+//ensuring that a valid CSRF token is always available for use in subsequent requests.
 //This mechanism helps maintain security by continuously providing a fresh token, even if the previous one is deleted.
 /*
 When a request is made to /api/csrf/restore, the csurf middleware in app,js checks for the presence of the _csrf cookie.
@@ -19,7 +52,7 @@ The req.csrfToken() method generates a CSRF token using the secret from the _csr
 This token is then set in the XSRF-TOKEN cookie.
 The XSRF-TOKEN cookie is accessible via JavaScript on the client side.
 Client-side code includes the token in the headers or body of state-changing requests to ensure they pass CSRF validation on the server.
-The _csrf cookie contains the CSRF secret needed to generate and validate CSRF tokens, and the XSRF-TOKEN cookie contains the actual CSRF token used in requests. 
+The _csrf cookie contains the CSRF secret needed to generate and validate CSRF tokens, and the XSRF-TOKEN cookie contains the actual CSRF token used in requests.
 This dual-cookie approach enhances security by keeping the secret in a secure, HTTP-only cookie while making the token available for client-side use, ensuring effective CSRF protection.
 */
 router.get("/api/csrf/restore", (req, res) => { //re-set the CSRF token cookie XSRF-TOKEN.
