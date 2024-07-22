@@ -79,7 +79,7 @@ router.get("/", async (req, res) => {
         ],
       ],
     },
-    group: ["Group.id", "previewImage.groupId", "previewImage.id"], //When include an associated model (like Membership) and perform an aggregate operation (like COUNT), Sequelize needs to know how to group the results. By grouping the results by the Group.id, you ensure that each group's results are distinct and the count is accurate for each group.when you use GROUP BY, all selected columns that are not aggregated must be included in the GROUP BY clause to ensure correct grouping.
+    group: ["Group.id", "previewImage.groupId", "previewImage.id",'Organizer.id'], //When include an associated model (like Membership) and perform an aggregate operation (like COUNT), Sequelize needs to know how to group the results. By grouping the results by the Group.id, you ensure that each group's results are distinct and the count is accurate for each group.when you use GROUP BY, all selected columns that are not aggregated must be included in the GROUP BY clause to ensure correct grouping.
   });
 
   const jsonGroup = groups.map((group) => {
