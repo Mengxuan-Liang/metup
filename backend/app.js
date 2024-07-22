@@ -6,12 +6,12 @@ const csurf = require('csurf');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 
-const { ValidationError } = require('sequelize');
+const routes = require('./routes');
 
 const { environment } = require('./config');
 const isProduction = environment === 'production';
 
-const routes = require('./routes');
+const { ValidationError } = require('sequelize');
 
 const app = express();
 app.use(morgan('dev'));
@@ -39,11 +39,11 @@ app.use(
 // This mw will create a 'csurf' token and add a 'req.csrfToken()' method to the req obj;
 // The token is stored in a cookie and used to verify subsequent requests.
 // 'req.csrfToken()' method will generate a new token that can be used in routes
-//The XSRF-TOKEN cookie value needs to be sent in the header of any request with all HTTP verbs besides GET. 
+//The XSRF-TOKEN cookie value needs to be sent in the header of any request with all HTTP verbs besides GET.
 //This header will be used to validate the _csrf cookie to confirm that the request comes from your site and not an unauthorized site.
 /*
 The req.csrfToken() method generates a CSRF token using the secret from the _csrf cookie.
-*/ 
+*/
 app.use(
     csurf({
         cookie: { //cookie: The CSRF token will be stored in a cookie with the following properties:
@@ -69,16 +69,16 @@ app.use((_req, _res, next) => {
 
 // Process sequelize errors
 /*
-When Sequelize encounters validation errors while performing operations on models (like creating, updating, or validating instances), it throws instances of ValidationError. 
+When Sequelize encounters validation errors while performing operations on models (like creating, updating, or validating instances), it throws instances of ValidationError.
 This object contains an array of errors, where each error object represents a specific validation failure.
 
-error.path refers to the field (or attribute) of the model where the validation error occurred. 
+error.path refers to the field (or attribute) of the model where the validation error occurred.
 For example, if you have a User model with a username field that failed validation, error.path would be 'username'.
 
-In Sequelize's ValidationError, the actual path (or attribute name) where the validation error occurred is not directly provided as a separate property like .path. 
+In Sequelize's ValidationError, the actual path (or attribute name) where the validation error occurred is not directly provided as a separate property like .path.
 Instead, you typically need to infer the path from the context in which the error is handled.
 
-After constructing the errors object, the middleware modifies err.title to 'Validation error' and assigns the errors object to err.errors. 
+After constructing the errors object, the middleware modifies err.title to 'Validation error' and assigns the errors object to err.errors.
 This transformation helps standardize how validation errors are communicated back to the client.
 */
 app.use((err, _req, _res, next) => {
