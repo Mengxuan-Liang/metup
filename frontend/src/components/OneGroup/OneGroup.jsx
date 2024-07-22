@@ -85,7 +85,7 @@ export default function OneGroup() {
                   Create event
                 </button>
                 <button onClick={handleDelete}>Delete group</button>
-                {goDelete && <DeleteGroup groupId={group.id} />}
+                {goDelete && <DeleteGroup groupId={group?.id} />}
                 <button onClick={handleUpdate}>Update group</button>
                 {goUpdate && <UpdateGroup group={group} />}
               </div>
