@@ -6,6 +6,8 @@ import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import LoginFormModal from "../LoginFormModal/LoginFormModal.jsx";
 import SignupFormModal from "../SignupFormModal/SignupFormModal.jsx";
 import "./ProfileButton.css";
+// import LoginFormPage from "../LoginFormPage/LoginFormPage.jsx";
+// import SignupFormPage from "../SignupFormPage/SignupFormPage.jsx";
 
 //Overall goal for profile button, click it to show dropdown menu(toggleMenu()), click inside the menu doesn't get closed(ulRef.current.contains), click the button again(toggleMenu()) or outside(document.addEventListener()) the button, dropdown menu will be closed.
 export default function ProfileButton({ sessionUser }) {
@@ -46,13 +48,15 @@ export default function ProfileButton({ sessionUser }) {
   const dispatch = useDispatch();
   const handleLogout = (e) => {
     e.preventDefault();
-    dispatch(logout());
+    dispatch(logout()).then(() => setShowMenu(false)); //setShowMenu to false, after click the logout button, menu will disappear.
   };
   // if(!sessionUser) return null;
   return (
     <>
-      <button onClick={toggleMenu}>
-        <VscAccount />
+      <button className="profile-button" onClick={toggleMenu}>
+        <div className="profile-icon">
+          <VscAccount />
+        </div>
       </button>
       <ul className={ulClassName} ref={ulRef}>
         {/* <li>{sessionUser.username}</li>
@@ -60,7 +64,7 @@ export default function ProfileButton({ sessionUser }) {
 				<li>{sessionUser.email}</li>
 				<li><button onClick={handleLogout}>Log out</button></li> */}
         {sessionUser ? (
-          <>
+          <div className="sessionuser-info-container">
             <li>{sessionUser.username}</li>
             <li>
               {sessionUser.firstName} {sessionUser.lastName}
@@ -69,22 +73,22 @@ export default function ProfileButton({ sessionUser }) {
             <li>
               <button onClick={handleLogout}>Log Out</button>
             </li>
-          </>
+          </div>
         ) : (
-          <>
-            <li>
+          <div className="login-signup-button">
+            <li className="login-button">
               <OpenModalButton
                 buttonText="Log In"
                 modalComponent={<LoginFormModal />}
               />
             </li>
-            <li>
+            <li className="signup-button">
               <OpenModalButton
                 buttonText="Sign Up"
                 modalComponent={<SignupFormModal />}
               />
             </li>
-          </>
+          </div>
         )}
       </ul>
     </>

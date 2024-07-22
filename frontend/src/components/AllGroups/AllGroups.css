@@ -1,0 +1,23 @@
+.active {
+  color: orangered;
+  text-decoration: none;
+  font-weight: bold;
+}
+.group-main-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px;
+}
+.group-text-container {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* border: 2px red solid; */
+}
+.event {
+  display: flex;
+  gap: 20px;
+}

@@ -1,3 +1,35 @@
 .hidden {
-	display: none;
-  }
+  display: none;
+}
+.login-signup-button {
+  display: flex;
+  flex-direction: column;
+}
+.profile-button {
+  /* border: red 2px solid; */
+  text-align: center;
+  padding-right: 100px;
+  background: none;
+  border: none;
+}
+.profile-icon:hover {
+  color: orange;
+  cursor: pointer;
+}
+
+.login-button,
+.signup-button {
+  font-size: larger;
+  width: 100px;
+}
+
+.profile-icon {
+  /* border: yellow 2px solid; */
+  width: 50px;
+  font-size: 30px;
+  color: orangered;
+}
+.sessionuser-info-container {
+  display: flex;
+  flex-direction: column;
+}

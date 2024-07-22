@@ -1,0 +1,38 @@
+.group-first-row {
+  display: flex;
+  flex: 0.7;
+  /* border: 1px red solid; */
+}
+.join-group-button {
+  margin-top: 50px;
+  /* border: 2px red solid; */
+}
+p {
+  color: grey;
+}
+.group-second-row {
+  background-color: gainsboro;
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  padding-left: 23%;
+}
+/* .two-rows {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+	} */
+.second-row-text-container {
+  /* border: 2px purple 1px;
+		text-align: center; */
+}
+h4 {
+  margin-bottom: 2px;
+}
+#group-event-body {
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+.group-event-body-component {
+  border: 2px red solid;
+}
